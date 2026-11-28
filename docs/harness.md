@@ -45,6 +45,8 @@ Skills shipped:
 
 ### Hooks (layer 2)
 
+Developer set-up, as in README section 1: Session Target **Copilot** (not Local), agent `story-builder`, permissions picker on **Manual permissions** or **Assisted permissions** (never **Allow all**, no **Autopilot**). In **User** settings set `"chat.useHooks": true`, `"chat.hooks.showWarnings": true`, `"chat.tools.global.autoApprove": false`, `"chat.defaultConfiguration": { "mode": "interactive", "approvals": "manual" }` and the `chat.tools.edits.autoApprove` block from README step 1.3.
+
 | File | Loaded by | When |
 |------|-----------|------|
 | `.github/hooks/harness.json` | Copilot (Preview) | Registers two commands: `sessionStart` and `preToolUse`. |

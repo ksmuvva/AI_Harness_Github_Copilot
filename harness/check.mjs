@@ -21,7 +21,7 @@ const REQUIRED_FILES = [
   'harness/config.json',
 ];
 // Built from parts so this source does not spell another assistant's name.
-const SECOND_SOURCES = ['.cl' + 'aude', 'CL' + 'AUDE.md', 'AGENTS.md'];
+const SECOND_SOURCES = ['.cl' + 'aude', 'CL' + 'AUDE.md', 'AGENTS.md', 'GEMINI.md', '.agents'];
 const BUILD_OUTPUT = /(^|\/)(bin|obj|node_modules)\//;
 
 const read = (root, file) => (existsSync(join(root, file)) ? readFileSync(join(root, file), 'utf8') : null);

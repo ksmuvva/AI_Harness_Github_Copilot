@@ -22,17 +22,17 @@ A set of files in the product repository that GitHub Copilot's agent in VS Code 
 
 | # | Do this |
 |---|---------|
-| 1 | Install a current VS Code with the GitHub Copilot extension. Sign in. |
-| 2 | Have Node 20 or later and git on your PATH. |
-| 3 | Open the repository root as the workspace folder and trust it. |
-| 4 | In the chat view use the **Copilot** agent harness (not "Local") and pick the `story-builder` agent. |
-| 5 | In **User** settings set `"chat.useHooks": true`, `"chat.hooks.showWarnings": true`, `"chat.tools.global.autoApprove": false`. |
-| 6 | Keep the permission level at Manual or Assisted. Not "Allow all", not Autopilot. |
-| 7 | Do not add web-capable MCP servers at user level for this workspace. |
-| 8 | Do not keep other AI assistants' config files in the repository root. |
-| 9 | After your first chat, run `node harness/check.mjs doctor`. Rerun after VS Code or Copilot updates. |
+| 1 | Install VS Code 1.143 or later. Copilot Chat is built in: select **Use AI Features** on the Copilot icon in the Status Bar and sign in. |
+| 2 | Have Node 20 or later and git on your PATH. Restart VS Code after installing Node. |
+| 3 | Open the repository root as a single folder and trust it (**Workspaces: Manage Workspace Trust**). |
+| 4 | For every new chat: set the **Session Target** control to **Copilot** (not Local), then pick `story-builder` in the **Agent** dropdown. |
+| 5 | In **User** settings set `"chat.useHooks": true`, `"chat.hooks.showWarnings": true`, `"chat.tools.global.autoApprove": false`, `"chat.defaultConfiguration": { "mode": "interactive", "approvals": "manual" }` and the `chat.tools.edits.autoApprove` block from README step 1.3. |
+| 6 | Keep the permissions picker on **Manual permissions** (or **Assisted permissions**). Never **Allow all**. Do not select **Autopilot**. |
+| 7 | Disable any web-capable MCP server for the session. User-level servers apply to every workspace. |
+| 8 | Keep other AI assistants' files (`AGENTS.md`, `GEMINI.md` and similar) out of the repository. |
+| 9 | Run **Chat: Open Customizations** and check the Agents and Hooks tabs. Then delete `.harness/hook.log`, send one prompt, and run `node harness/check.mjs doctor`. Repeat after every VS Code update. |
 
-These settings come from the current VS Code and GitHub documentation. Hooks are a Preview feature and a user can switch them off. The pull-request check does not depend on them.
+These steps come from the VS Code and GitHub documentation of 25 November 2026 (VS Code 1.148). The README has the click-by-click version and a troubleshooting table. Hooks are a Preview feature and a user or a policy can switch them off. The pull-request check does not depend on them.
 
 ## Day to day
 
