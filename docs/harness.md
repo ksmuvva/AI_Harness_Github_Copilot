@@ -70,6 +70,7 @@ Bare `npm install` (also with options such as `--prefix web`), `npm ci` and `dot
 | File | Loaded by | When |
 |------|-----------|------|
 | `.github/workflows/harness-check.yml` | GitHub Actions | Every pull request, and every push to `main`. Runs the unit tests; on a pull request it also runs `check.mjs pr`, using the base branch's copy of `harness/` when the base has one. |
+| `.github/workflows/dotnet-test.yml` | GitHub Actions | Every pull request, and every push to `main`. Runs `dotnet test` at the repository root once a solution file exists there; before that it reports that there is nothing to test. |
 | `harness/check.mjs` | The workflow, developers, Copilot | Commands: `lint-stories`, `hash <ID>`, `pr`, `doctor`. |
 | `harness/lib.mjs` | `check.mjs`, `hook.mjs`, `eval.mjs`, the tests | Shared code: config, globs, frontmatter, story lint, git, changed files, package detection. |
 | `harness/config.json` | `lib.mjs` | Story ID pattern, folders, product paths, test paths, protected paths, maintenance prefixes, package allow-list. |
