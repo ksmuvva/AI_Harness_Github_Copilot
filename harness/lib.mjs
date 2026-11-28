@@ -112,7 +112,7 @@ export function dataModelEntities(root, config) {
       ? /\bCREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:"?\w+"?\s*\.\s*)?"?(\w+)"?/gi
       : /^#{2,3}[ \t]+`?([a-z][a-z0-9_]*)`?[ \t]*\r?$/gm;
     // A commented-out table is not part of the model.
-    const src = lower.endsWith('.sql') ? text.replace(/--.*$/gm, '') : text;
+    const src = lower.endsWith('.sql') ? text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/--.*$/gm, '') : text;
     for (const m of src.matchAll(re)) names.add(m[1].toLowerCase());
   }
   return names;

@@ -5,7 +5,7 @@
   "dataModelDir": "docs/data-model",
   "productPaths": ["src/**", "tests/**", "web/**", "db/**"],
   "testPaths": ["tests/**", "web/**"],
-  "protectedPaths": [".github/**", "harness/**", "user-stories/**", "docs/data-model/**", "docs/context/**", "eval/**", ".vscode/**", ".gitattributes", ".gitignore"],
+  "protectedPaths": [".github/**", "harness/**", "user-stories/**", "docs/data-model/**", "docs/context/**", "eval/**", ".vscode/**", ".gitattributes", ".gitignore", "**/AGENTS.md", "README.md", "docs/*.md", "docs/traces/README.md", "THIRD-PARTY-NOTICES.md"],
   "maintenanceBranchPrefixes": ["harness/", "stories/"],
   "allowedPackages": {
     "nuget": ["Microsoft.AspNetCore.OpenApi", "Microsoft.EntityFrameworkCore", "Microsoft.EntityFrameworkCore.Design", "Npgsql.EntityFrameworkCore.PostgreSQL", "Microsoft.NET.Test.Sdk", "Microsoft.AspNetCore.Mvc.Testing", "xunit", "xunit.runner.visualstudio", "Reqnroll.xUnit", "Testcontainers.PostgreSql", "coverlet.collector"],

@@ -227,6 +227,24 @@ test('pr: STORY_NOT_READY', () => {
   assert.deepEqual(pr(dir, 'story/CSX-3-register').codes, ['STORY_NOT_READY']);
 });
 
+test('pr: STORY_NOT_READY for a story already marked done', () => {
+  const dir = tempDir();
+  cpSync(template, dir, { recursive: true });
+  write(dir, 'user-stories/CSX-5.md', story('CSX-5', 'done'));
+  commit(dir, 'a delivered story');
+  write(dir, 'src/Api/Books/BookEndpoints.cs', '// endpoints\n');
+  write(dir, 'tests/Api.Tests/BookTests.cs', TESTS.replaceAll('CSX-1', 'CSX-5'));
+  write(dir, 'docs/traces/CSX-5.md', trace({ id: 'CSX-5', hash: storyHash(story('CSX-5', 'done')) }));
+  const r = pr(dir, 'story/CSX-5-again');
+  assert.deepEqual(r.codes, ['STORY_NOT_READY']);
+  assert.match(r.out, /is done; only a ready story is built/);
+});
+
+test('pr: a story branch may not add an AGENTS.md or change the README, even when the trace plans it', () => {
+  const dir = work({ 'AGENTS.md': 'x\n', 'src/AGENTS.md': 'x\n', 'README.md': 'x\n', 'docs/traces/CSX-1.md': trace({ planned: ['AGENTS.md', 'src/AGENTS.md', 'README.md'] }) });
+  assert.deepEqual(pr(dir).codes, ['PROTECTED', 'PROTECTED', 'PROTECTED']);
+});
+
 test('pr: story lint findings are reported with their own codes', () => {
   const bad = story('CSX-1', 'ready').replace('- (none)', '- Which ISBN format?');
   const dir = work({ 'docs/traces/CSX-1.md': trace({ hash: storyHash(bad) }) });
@@ -316,10 +334,10 @@ test('pr: SCOPE for a planned glob that starts with a wildcard', () => {
 });
 
 test('pr: SCOPE, one finding per file outside the plan', () => {
-  const dir = work({ 'src/Api/Members/MemberEndpoints.cs': '// extra\n', 'docs/traces/README.md': 'edited\n' });
+  const dir = work({ 'src/Api/Members/MemberEndpoints.cs': '// extra\n', 'notes/todo.md': 'edited\n' });
   const r = pr(dir);
   assert.deepEqual(r.codes, ['SCOPE', 'SCOPE']);
-  assert.match(r.out, /^FAIL SCOPE docs\/traces\/README\.md /m);
+  assert.match(r.out, /^FAIL SCOPE notes\/todo\.md /m);
   assert.match(r.out, /^FAIL SCOPE src\/Api\/Members\/MemberEndpoints\.cs /m);
 });
 
@@ -434,7 +452,20 @@ test('doctor passes on a set-up repo and lists tools and denies', () => {
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /^tools seen: bash, web_fetch$/m);
   assert.match(r.out, /^denies: 2$/m);
+  assert.match(r.out, /^last hook call: t$/m);
   assert.match(r.out, /^PASS$/m);
+});
+
+test('doctor: DOCTOR_HOOKS when the hook ran but could not read any tool call', () => {
+  const dir = doctorRepo();
+  write(dir, '.harness/hook.log', [
+    { ts: 't', event: 'sessionStart', tool: null, decision: 'none', reason: '' },
+    { ts: 't', event: 'preToolUse', tool: null, decision: 'error', reason: 'Unexpected token' },
+    { ts: 't', event: 'preToolUse', tool: '', decision: 'none', reason: '' },
+  ].map((e) => JSON.stringify(e)).join('\n'));
+  const r = check(dir, ['doctor']);
+  assert.deepEqual(r.codes, ['DOCTOR_HOOKS']);
+  assert.match(r.out, /none names a tool/);
 });
 
 test('doctor: DOCTOR_HOOKS when the log has no preToolUse entry', () => {

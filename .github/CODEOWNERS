@@ -7,3 +7,10 @@
 /docs/context/     @ksmuvva
 /eval/             @ksmuvva
 /.vscode/          @ksmuvva
+/.gitattributes    @ksmuvva
+/.gitignore        @ksmuvva
+/AGENTS.md         @ksmuvva
+/README.md         @ksmuvva
+/docs/*.md         @ksmuvva
+/docs/traces/README.md  @ksmuvva
+/THIRD-PARTY-NOTICES.md @ksmuvva

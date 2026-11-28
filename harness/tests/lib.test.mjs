@@ -193,6 +193,8 @@ test('entity discovery from .sql and data-model.md', () => {
     'CREATE TABLE IF NOT EXISTS "loan" (id uuid);',
     'CREATE TABLE public.fine(id uuid);',
     '-- CREATE TABLE retired (id uuid);',
+    '/* CREATE TABLE dropped (id uuid);',
+    '   CREATE TABLE also_dropped (id uuid); */',
   ].join('\r\n'));
   write(root, 'docs/data-model/data-model.md', '# Model\n## Overview\n## `reservation`\r\n### branch_office\n#### too_deep\n## two words\n');
   assert.deepEqual([...dataModelEntities(root, config)].sort(), ['book', 'branch_office', 'fine', 'loan', 'member', 'reservation']);
