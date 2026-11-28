@@ -156,7 +156,9 @@ test('absolute paths inside the repo, Windows separators and ../ are made repo-r
   const windows = repo.replace(/\//g, '\\');
   assertDenied(pre('edit', { path: join(repo, 'harness', 'config.json') }), /^harness\/config\.json is protected/);
   assertDenied(pre('edit', { path: `${windows}\\.github\\hooks\\harness.json` }), /^\.github\/hooks\/harness\.json is protected/);
-  assertDenied(pre('edit', { path: `${windows.toLowerCase()}\\user-stories\\CSX-1.md` }), /^user-stories\/CSX-1\.md is protected/);
+  // A lower-cased absolute path names the same file only where the file system ignores case.
+  const anyCase = process.platform === 'win32' ? windows.toLowerCase() : windows;
+  assertDenied(pre('edit', { path: `${anyCase}\\user-stories\\CSX-1.md` }), /^user-stories\/CSX-1\.md is protected/);
   assertDenied(pre('edit', { path: 'src\\..\\harness\\hook.mjs' }), /^harness\/hook\.mjs is protected/);
   assertDenied(pre('edit', { path: './.vscode/settings.json' }), /^\.vscode\/settings\.json is protected/);
   assert.deepEqual(pre('edit', { path: `${windows}\\src\\Api\\Program.cs` }), {});
