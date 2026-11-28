@@ -171,7 +171,7 @@ GitHub offers a status check in the ruleset only after its workflow has run once
 
 One story per branch, one branch per pull request.
 
-Story `T-1` (scaffold the API with a health endpoint) is the worked example: read `user-stories/T-1.md`, and once it is built, its plan in `docs/traces/T-1.md`.
+Story `T-1` (scaffold the API with a health endpoint) is the worked example: read the story in `user-stories/T-1.md` and its plan in `docs/traces/T-1.md`.
 
 ## 4. What the harness enforces
 
