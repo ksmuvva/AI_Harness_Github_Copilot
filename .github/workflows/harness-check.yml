@@ -1,0 +1,39 @@
+name: harness-check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  harness-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Harness unit tests
+        run: node --test harness/tests/
+
+      # GITHUB_BASE_REF holds github.base_ref. It is read from the environment so
+      # that a branch name is never spliced into the script text.
+      # The checker is taken from the base branch, so a pull request cannot pass by
+      # editing harness/check.mjs. The first import has no base copy and runs its own.
+      - name: Pull-request check
+        if: github.event_name == 'pull_request'
+        run: |
+          if git cat-file -e "origin/${GITHUB_BASE_REF}:harness/check.mjs" 2>/dev/null; then
+            mkdir -p "$RUNNER_TEMP/base"
+            git archive "origin/${GITHUB_BASE_REF}" harness | tar -x -C "$RUNNER_TEMP/base"
+            node "$RUNNER_TEMP/base/harness/check.mjs" pr --base "origin/${GITHUB_BASE_REF}" --root "$GITHUB_WORKSPACE"
+          else
+            node harness/check.mjs pr --base "origin/${GITHUB_BASE_REF}"
+          fi
