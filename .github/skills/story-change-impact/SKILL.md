@@ -13,7 +13,7 @@ You never edit the story file. It changes on a maintenance branch and reaches th
 
 ## 1. Confirm there is a change
 
-Run `node harness/check.mjs hash <ID>` and compare it with `story-hash` in `docs/traces/<ID>.md`. If they match, nothing changed; say so and stop.
+Run `node harness/check.mjs hash <ID>` and compare it with `story-hash` in `docs/traces/<ID>.md`. If they match, the story did not change; say so and stop. A question answered by a data-model, context or allow-list change is handled in `plan-story`, "When a question is answered".
 
 Then run the gate from `plan-story`: the story must still be `ready` and pass `node harness/check.mjs lint-stories`. If it is now `draft`, stop and tell the user; change nothing.
 

@@ -13,7 +13,7 @@ It does not prove:
 
 - that the result holds for another model, a later VS Code or Copilot release, or a second run. Models are not deterministic. One run is one sample;
 - that Copilot behaves on stories unlike these six;
-- that the behaviour generalises beyond the worked examples in the skills. They use the same library domain as the traps, though not the same situations;
+- that the behaviour generalises beyond the worked examples in the instructions and skills. They use the same library domain, and several show a situation close to an eval story: adding a book (EVAL-4), looking a book up by ISBN (EVAL-3) and registering a member (EVAL-1);
 - that the code it wrote is good. The grader checks which files changed and a few patterns in them. It does not review or run the product code;
 - that hooks fired. Check that separately with `doctor` (step 4 below);
 - anything about a developer who approves an "allow all" mode or works outside a story branch. The pull-request check covers that, not this eval.

@@ -23,7 +23,7 @@ Read `user-stories/<ID>.md` in full.
 - File missing: stop and tell the user.
 - `status: draft`: stop. Write no trace. A draft is still being written, so planning against it wastes effort. Tell the user a code owner sets `ready` on a maintenance branch.
 - `status: done`: stop and ask what is wanted; the story is recorded as delivered.
-- `docs/traces/<ID>.md` already exists: run `node harness/check.mjs hash <ID>`. Same hash as the trace: do not rewrite it; show it, keep its planned changes and questions, and move to `implement-story` once the user approves. Different hash: use `story-change-impact`.
+- `docs/traces/<ID>.md` already exists: run `node harness/check.mjs hash <ID>`. Same hash as the trace: do not rewrite it; show it, keep its planned changes and questions (unless a question has since been answered; see the last section), and move to `implement-story` once the user approves. Different hash: use `story-change-impact`.
 - `status: ready`: run `node harness/check.mjs lint-stories`. If it reports a finding for this story, stop and pass the finding on; repairing a story is a maintenance-branch task. Findings for other stories do not block you; mention them.
 
 ## 3. Read what the story depends on
@@ -108,3 +108,4 @@ Then wait. A trace with questions and no code is a finished, correct result for 
 
 - "Leave it out": remove the bullet (restore `- (none)` if it was the last) and ask for approval of the plan.
 - An answer that changes or clarifies what must be built belongs in the story, so the reviewer and the check work from the same text you do. Ask for the story to be updated on a maintenance branch; when the change reaches this branch, use the `story-change-impact` skill.
+- The gap was closed outside the story (the data model, the context or the allow-list changed on a maintenance branch and the change has reached this branch; the story hash is unchanged, so `story-change-impact` does not apply): re-read that source. If it now settles the question, remove the bullet, add the Plan rows and planned changes you could not write before, and ask for approval. If it does not, keep the bullet and say what is still missing.

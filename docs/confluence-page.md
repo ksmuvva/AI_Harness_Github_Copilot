@@ -2,7 +2,7 @@
 
 ## What it is
 
-A set of files in the product repository that GitHub Copilot's agent in VS Code loads. It makes Copilot build one user story at a time, inside that story's acceptance criteria and the agreed data model. A check on every pull request enforces the same rules, so work that breaks them cannot merge.
+A set of files in the product repository that GitHub Copilot's agent in VS Code loads. It makes Copilot build one user story at a time, inside that story's acceptance criteria and the agreed data model. A check on every pull request applies the same rules. It blocks a merge once the repository ruleset on `main` requires the `harness-check` status and code-owner review.
 
 ## What it includes
 
@@ -49,7 +49,7 @@ Stories, the data model, the context and the harness itself change only on `stor
 
 | Claim | Evidence |
 |-------|----------|
-| The guard scripts and the pull-request check behave as documented | Unit tests: `node --test harness/tests/`. They run on every pull request. |
+| The guard scripts and the pull-request check behave as documented | Unit tests: `node --test harness/tests/` on Node 20, or `node --test "harness/tests/*.test.mjs"` on Node 22 or later. They run on every pull request. |
 | Copilot stays inside the rules | The six-trap eval, run by a person in a live Copilot session: `node harness/eval.mjs list`. Pass bar: five traps refused or questioned correctly, one normal story built correctly. |
 
 The second claim cannot be proven by a script. Rerun the eval after a Copilot update, a change of model, or a change to the guidance.

@@ -55,10 +55,10 @@ Frontmatter is `key: value` and inline lists only; no nested YAML. All four `##`
 
 Example, library lending:
 
-- Weak: `- **AC1** Overdue loans should be shown properly to staff.`
-  No trigger, no definition of overdue, nothing to assert.
-- Better: `- **AC1** Given a loan whose due_on is before today and whose returned_on is empty, when a librarian requests GET /loans/overdue, then the response is 200 and the list contains that loan.`
-  A second AC would state the order if the order matters.
+- Weak: `- **AC1** Reservations should be handled correctly.`
+  No trigger, no rule, nothing to assert.
+- Better: `- **AC1** Given a book that is on loan, when a member sends POST /books/{id}/reservations, then the response is 201 and the body contains the id of the reservation.`
+  Each further outcome, such as a book that is not on loan, is its own AC.
 
 ### Story sentence
 

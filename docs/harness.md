@@ -98,13 +98,13 @@ All harness scripts use the Node 20 standard library only. There are no npm or N
 
 | Branch | Kind | What may change |
 |--------|------|-----------------|
-| `story/<ID>` or `story/<ID>-<slug>` | Story | Product paths and `docs/traces/<ID>.md`, within the trace's "Planned changes". Never a protected path. |
+| `story/<ID>` or `story/<ID>-<slug>` | Story | Any path the trace's "Planned changes" covers, except a protected path. In practice: product paths, `docs/traces/<ID>.md` and a root solution file. |
 | `harness/<slug>`, `stories/<slug>` | Maintenance | Harness, stories, data model, context, eval, docs. Never a product path. |
 | Anything else | Other | Nothing mergeable. The check fails with `BRANCH`. |
 
 - The story ID is parsed from the branch name with `^story/((?:[A-Z]+)-\d+)(?:-.*)?$` and must match `storyIdPattern` in `harness/config.json`.
 - `CSX-<n>` is a user story (the Jira key, verbatim). `T-<n>` is a technical task in the same file format.
-- Protected paths: `.github/**`, `harness/**`, `user-stories/**`, `docs/data-model/**`, `docs/context/**`, `eval/**`, `.vscode/**`, `.gitattributes`, `.gitignore`.
+- Protected paths: `.github/**`, `harness/**`, `user-stories/**`, `docs/data-model/**`, `docs/context/**`, `eval/**`, `.vscode/**`, `.gitattributes`, `.gitignore`, `**/AGENTS.md`, `README.md`, `docs/*.md`, `docs/traces/README.md`, `THIRD-PARTY-NOTICES.md`.
 - Product paths: `src/**`, `tests/**`, `web/**`, `db/**`. Test paths (searched for AC tokens): `tests/**`, `web/**`.
 
 ## 4. Story lifecycle
@@ -116,7 +116,7 @@ All harness scripts use the Node 20 standard library only. There are no npm or N
 | 3. Plan | Developer with `story-builder` | `story/<ID>-<slug>` | `docs/traces/<ID>.md` |
 | 4. Review the plan | Developer | same | Go-ahead, or questions for the story owner |
 | 5. Implement | Developer with `story-builder` | same | Product code and tests carrying `<ID>/AC<n>` tokens |
-| 6. Check | Developer, then GitHub Actions | same | `dotnet test`, web tests, `node harness/check.mjs pr` |
+| 6. Check | Developer, then GitHub Actions | same | Developer: `dotnet test`, web tests, `node harness/check.mjs pr`. GitHub Actions: `harness-check` and `dotnet-test`. The web tests do not run in CI. |
 | 7. Review and merge | Reviewer, optionally with `story-reviewer` | pull request to `main` | Merged |
 | 8. Close | Code owner | `stories/<slug>` | Status `done` |
 
@@ -185,7 +185,7 @@ node harness/check.mjs doctor
 | Code | Meaning | Fix |
 |------|---------|-----|
 | `STORY_MISSING` | `user-stories/<ID>.md` does not exist on this branch. | Get the story merged to `main` through a `stories/<slug>` branch, then merge `main`. |
-| `STORY_NOT_READY` | The story's status is `draft`. | A code owner sets `ready` on a maintenance branch. |
+| `STORY_NOT_READY` | The story's status is not `ready` (it is `draft` or `done`). | A code owner sets `ready` on a maintenance branch. |
 | `STORY_NAME` | The file name is not `<id>.md`, or the `id` does not match `storyIdPattern`. | Rename the file or correct the `id`. |
 | `STORY_STATUS` | `status` is not `draft`, `ready` or `done`. | Correct it. |
 | `STORY_SECTIONS` | One of the four `##` sections is missing. | Add it. Copy `user-stories/_TEMPLATE.md`. |
@@ -218,12 +218,12 @@ All `STORY_*` fixes happen on a maintenance branch, never on the story branch.
 | Code | Meaning | Fix |
 |------|---------|-----|
 | `DOCTOR_SECOND_SOURCE` | Another AI assistant's config is in the repository root (a dot-folder, a root instructions file, or `AGENTS.md`). | Remove it from the working copy. The Copilot runtime can read it as live hooks or instructions. |
-| `DOCTOR_HOOKS` | `.harness/hook.log` is missing, or has no `sessionStart` or no `preToolUse` entry. | Open a Copilot chat in this trusted folder, send one prompt that uses a tool, and rerun. If it still fails, recheck the User settings in the README. |
+| `DOCTOR_HOOKS` | `.harness/hook.log` is missing, has no `sessionStart` or no `preToolUse` entry, or has `preToolUse` entries of which none names a tool. | Open a Copilot chat in this trusted folder, send one prompt that uses a tool, and rerun. If it still fails, recheck the User settings in the README. |
 | `DOCTOR_NODE` | Node is older than 20. | Install Node 20 or later. |
 | `DOCTOR_GIT` | The folder is not a git repository, or git is not on PATH. | Run from the repository root; install git. |
 | `DOCTOR_FILE` | A required harness file is missing: `.github/copilot-instructions.md`, `.github/hooks/harness.json`, `.github/agents/story-builder.agent.md` or `harness/config.json`. | Restore it from `main`. |
 
-`doctor` always prints two lines first: `tools seen: ...` (the distinct tool names in the hook log) and `denies: <n>`. Compare the names with the patterns in `harness/hook.mjs`. A name the hook does not recognise is a tool it cannot block; report it to a code owner.
+`doctor` always prints three lines first: `last hook call: ...` (the time of the newest log entry), `tools seen: ...` (the distinct tool names in the hook log) and `denies: <n>`. An old log passes, so to test today's set-up delete `.harness/hook.log`, send one tool-using prompt, and check that `last hook call` is from that prompt. Compare the names with the patterns in `harness/hook.mjs`. A name the hook does not recognise is a tool it cannot block; report it to a code owner.
 
 ## 8. Change the harness
 
@@ -320,4 +320,5 @@ Trap definitions are in `eval/traps.json`. The procedure is in [eval/README.md](
 - A wide "Planned changes" glob (such as `src/**`) weakens `SCOPE`. Only a glob that starts with a wildcard is rejected. Reviewing the trace is part of the control.
 - A pull request can change `.github/workflows/harness-check.yml` itself. Code-owner review is the only control for that file.
 - An AC token counts anywhere under the test paths, including a comment. The reviewer reads the test.
+- CI runs `dotnet test` once a solution file exists. It does not run the web tests; the reviewer confirms that result.
 - The package allow-list and the stack are template defaults. The owner should review both.

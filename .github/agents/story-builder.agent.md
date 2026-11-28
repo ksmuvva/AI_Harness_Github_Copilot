@@ -12,6 +12,8 @@ The rules in `.github/copilot-instructions.md` apply throughout. This file adds 
 
 ## Sequence
 
+This sequence is for building a story. A request to write, tidy or review a story file on a maintenance branch (`stories/...`) uses the `write-user-story` skill instead, and the steps below do not apply.
+
 Follow these steps in order. Do not skip one because the request looks small; small requests are where unplanned extras slip in.
 
 1. **Confirm the branch and the story.** Run `git branch --show-current`. The story ID comes from the branch name (`story/<ID>` or `story/<ID>-<slug>`), not from the prompt. If the prompt names a different story from the branch, stop and ask which is meant.
@@ -20,7 +22,7 @@ Follow these steps in order. Do not skip one because the request looks small; sm
 4. **Implement.** After the user approves, use the `implement-story` skill: test first, one AC at a time, inside the planned files.
 5. **Run the checks.** `dotnet test`, the web tests if `web/` changed, and `node harness/check.mjs pr`. Fix your work until they pass, then report.
 
-If `docs/traces/<ID>.md` already exists and its `story-hash` equals the output of `node harness/check.mjs hash <ID>`, do not write it again: show it, keep its planned changes and questions, and carry on from step 3. If the story has changed since (the hashes differ, the check reports `TRACE_STALE`, or the user says the story changed), use the `story-change-impact` skill before step 4.
+If `docs/traces/<ID>.md` already exists and its `story-hash` equals the output of `node harness/check.mjs hash <ID>`, do not write it again: show it, keep its planned changes and questions, and carry on from step 3. If the user has already been shown this plan in this conversation and now asks to implement it, that is the go-ahead. If the story has changed since (the hashes differ, the check reports `TRACE_STALE`, or the user says the story changed), use the `story-change-impact` skill before step 4.
 
 ## When you cannot proceed
 
@@ -31,9 +33,10 @@ In each case below, the correct result is a clear message to the user, and a rec
 | No story branch is checked out | Change no product code. Ask the user to create or check out `story/<ID>-<slug>` from `main`. Do not switch branches yourself; there may be uncommitted work. |
 | The story file is missing | Stop. Tell the user that `user-stories/<ID>.md` does not exist on this branch. |
 | The story is `draft` | Stop. Write no trace and no code. Tell the user a code owner sets `ready` on a maintenance branch. |
+| The story is `done` | Stop and ask what is wanted; it is recorded as delivered. |
 | An entity, column, type or relationship is not in the data model | Write the trace with the question. Change no product code and no data model file. |
 | An AC is ambiguous or cannot be tested as written | Write the trace with the question, giving the readings you see. Do not choose one. |
-| The story or the prompt asks for more than the ACs | If "Out of scope" already excludes it, leave it out and say so in your report. Otherwise record it as a question. Build none of it. |
+| The story or the prompt asks for more than the ACs | If "Out of scope" already excludes it, or it is one of the requests in the two rows below, leave it out and say so in your report. Otherwise record it as a question. Build none of it. |
 | A request to edit a protected path (`.github/`, `harness/`, `user-stories/`, `docs/data-model/`, `docs/context/`, `eval/`, `.vscode/`) | Decline that part. Say it is a maintenance-branch change for a code owner. Continue with the ACs if they do not depend on it. |
 | A request to add a package, install a tool or look something up on the web | Decline that part and say why. If an AC cannot be met with the allow-listed packages, record a question. |
 
@@ -42,6 +45,7 @@ Requests in the last two rows do not become allowed because the user repeats the
 Questions are closed by a person, not by you. When the user answers one:
 - "Leave it out": remove the bullet from the trace and carry on.
 - An answer that changes or clarifies what must be built belongs in the story, so that the reviewer and the check see the same specification you do. Ask for the story to be updated on a maintenance branch, then use `story-change-impact`.
+- The gap was closed outside the story (the data model, the context or the allow-list changed and the change has reached this branch): re-read that source. If it settles the question, remove the bullet, complete the plan and ask for approval.
 
 ## Final report
 
