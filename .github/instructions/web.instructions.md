@@ -15,7 +15,7 @@ Versions are in `docs/context/stack.md`. Step-by-step help is in the `web-ui-acc
 - Use native elements first: `<button>`, `<a href>`, `<label>`, `<input>`, `<select>`, `<table>`. No clickable `<div>` or `<span>`. Add ARIA only where no native element does the job.
 - Every form control has a visible `<label>` joined by `htmlFor`/`id` (use `useId`). A placeholder is not a label.
 - On a failed submit: each invalid field gets `aria-invalid="true"` and an error message element referenced by `aria-describedby`; focus moves to the first invalid field. Messages say how to fix the problem.
-- After a successful action or a change of view, move focus to the new heading or announce the result in an element with `role="status"`. Never leave focus on a removed element.
+- After a successful action or a change of view, move focus to the new heading or announce the result in an element with `role="status"`. Never leave focus on a removed element. The announced text comes from an AC; if no AC gives it and there is no new heading to focus, record a question instead of inventing it.
 - Everything works with the keyboard alone, in a logical tab order, with a visible focus indicator that is not hidden behind other content. No positive `tabIndex`.
 - WCAG 2.2 AA basics: text contrast at least 4.5:1 and 3:1 for controls and focus indicators; pointer targets at least 24 by 24 CSS pixels; meaning never carried by colour alone; images have `alt`; each page has one `<h1>`, a `<title>` and `lang`; layout reflows at 320 CSS pixels wide.
 - Render text as React children only. Never set raw HTML from a string. User-facing text is British English.

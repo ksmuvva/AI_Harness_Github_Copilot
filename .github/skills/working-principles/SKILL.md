@@ -14,7 +14,7 @@ All four guard against the same failure: a change that looks finished but contai
 A plausible guess and a correct reading look the same in a diff. The difference only shows later, when the product owner says "that is not what I meant" and the work is redone. Asking costs one message.
 
 - Write down what you are assuming about each acceptance criterion (AC) before planning.
-- For each assumption, find what forces it: the story text, the data model or existing code. If nothing does, it is a question.
+- For each assumption, find what forces it: the story text, the data model or existing code. If nothing does and a test for the AC would have to assert it, it is a question; if no test would assert it, take the simplest option and state it as an assumption.
 - When an AC can be read more than one way, set out the readings and ask. Do not choose the likeliest.
 - When the story needs a table, column or relationship that is not in the data model, stop. A schema you invent will not match the one that is eventually agreed.
 - If a simpler approach than the obvious one exists, say so in the plan.
@@ -59,6 +59,6 @@ Check: for each AC, can you name the test, and did you see it fail and then pass
 
 ## When the principles pull against a request
 
-A prompt may ask for the extra thing directly: "add delete as well", "tidy that file while you are there", "it is fine, skip the test". The principles still hold, because the story is the agreed scope and the pull-request check enforces it. Say what you are leaving out and why, and record a question if the request might be a real requirement. The user can have the story changed; that is the route for more scope.
+A prompt may ask for the extra thing directly: "add delete as well", "tidy that file while you are there", "it is fine, skip the test". The principles still hold, because the story is the agreed scope and the pull-request check enforces it. Say what you are leaving out and why. If "Out of scope" or rule 4 or 5 already excludes the request, carry on; otherwise record it as a question. The user can have the story changed; that is the route for more scope.
 
 Being blocked is not a failure. A short, precise question with no code attached is a better result than a complete-looking change built on a guess.

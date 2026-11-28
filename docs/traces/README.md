@@ -55,7 +55,7 @@ A person closes a question. Copilot does not answer its own.
 | The answer is | What happens |
 |---------------|--------------|
 | "Leave it out" | Tell Copilot. It removes the bullet and carries on with the rest. |
-| Something that changes or clarifies what must be built | The answer belongs in the story, the data model or the context, so the reviewer and the check see the same specification. Change it on a maintenance branch, merge or rebase the story branch on `main`, then ask Copilot to use the `story-change-impact` skill. |
+| Something that changes or clarifies what must be built | The answer belongs in the story, the data model or the context, so the reviewer and the check see the same specification. Change it on a maintenance branch, merge or rebase the story branch on `main`, then ask Copilot to use the `story-change-impact` skill if the story file changed, or to re-plan the open question if only the data model, the context or the allow-list changed. |
 
 Do not close the second kind by deleting the bullet or by answering only in chat. A reviewer cannot see a chat.
 
@@ -64,4 +64,4 @@ Do not close the second kind by deleting the bullet or by answering only in chat
 - Every AC in the story has a row, and the test named in it would fail without the change.
 - No row covers something the story does not ask for.
 - "Planned changes" is as narrow as the plan allows. A glob such as `src/**` defeats the `SCOPE` check.
-- No planned path is a protected path (`.github/`, `harness/`, `user-stories/`, `docs/data-model/`, `docs/context/`, `eval/`, `.vscode/`).
+- No planned path is a protected path (`.github/`, `harness/`, `user-stories/`, `docs/data-model/`, `docs/context/`, `eval/`, `.vscode/`, `README.md`, the files directly under `docs/`, or any `AGENTS.md`).

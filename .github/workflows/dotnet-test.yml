@@ -1,0 +1,35 @@
+name: dotnet-test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  dotnet-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The first technical story adds the solution file. Until then there is nothing to build.
+      - name: Look for a solution file
+        id: solution
+        run: |
+          if compgen -G "./*.sln" >/dev/null || compgen -G "./*.slnx" >/dev/null; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No solution file at the repository root yet. Nothing to test."
+          fi
+
+      # Keep the version in step with docs/context/stack.md.
+      - uses: actions/setup-dotnet@v4
+        if: steps.solution.outputs.found == 'true'
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build and test
+        if: steps.solution.outputs.found == 'true'
+        run: dotnet test

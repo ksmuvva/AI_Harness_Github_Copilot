@@ -180,6 +180,9 @@ test('story branch with a draft or missing story: product edits are denied, the 
   assertDenied(pre('edit', { path: 'user-stories/CSX-3.md' }), /is protected/);
   checkout('story/CSX-2-missing');
   assertDenied(pre('create', { path: 'tests/Api.Tests/MemberTests.cs' }), /story is not ready/);
+  write('user-stories/CSX-4.md', story('CSX-4', 'done'));
+  checkout('story/CSX-4-again');
+  assertDenied(pre('edit', { path: 'src/Api/Program.cs' }), /CSX-4 is done/);
 });
 
 test('maintenance branch: product edits are denied, harness and story edits are allowed', () => {
@@ -193,10 +196,12 @@ test('maintenance branch: product edits are denied, harness and story edits are 
 
 test('any other branch: product and protected edits are both denied', () => {
   checkout('main');
-  assertDenied(pre('edit', { path: 'src/Api/Program.cs' }), /check out story\/<ID> first/);
-  assertDenied(pre('edit', { path: 'web/src/App.tsx' }), /check out story\/<ID> first/);
+  assertDenied(pre('edit', { path: 'src/Api/Program.cs' }), /no story branch is checked out; ask the user/);
+  assertDenied(pre('edit', { path: 'web/src/App.tsx' }), /no story branch is checked out; ask the user/);
   assertDenied(pre('edit', { path: 'harness/config.json' }), /is protected/);
-  assert.deepEqual(pre('edit', { path: 'README.md' }), {});
+  assertDenied(pre('edit', { path: 'README.md' }), /is protected/);
+  assertDenied(pre('create', { path: 'src/AGENTS.md' }), /is protected/);
+  assert.deepEqual(pre('edit', { path: 'notes.md' }), {});
 });
 
 test('shell: installs, downloads, force pushes and --no-verify are denied', () => {
@@ -240,7 +245,7 @@ test('shell: installs, downloads, force pushes and --no-verify are denied', () =
     'git push origin +HEAD:main',
   ];
   for (const command of commands) assert.ok(denied(pre('bash', { command })), command);
-  assertDenied(pre('bash', { command: 'dotnet add package Testcontainers.PostgreSql' }), /add it to the project file by hand and restore/);
+  assertDenied(pre('bash', { command: 'dotnet add package Testcontainers.PostgreSql' }), /added to the project file by hand and then restored/);
   // The old pattern was quadratic here and ran past the hook timeout, which fails open.
   const started = Date.now();
   pre('bash', { command: 'dotnet add '.repeat(20000) });

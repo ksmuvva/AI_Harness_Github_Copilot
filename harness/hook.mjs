@@ -13,7 +13,7 @@ const WEB = /^(web_?fetch|web_?search|fetch|fetch_webpage)$/i;
 const EDIT = /^(create|edit|str_replace_editor|apply_patch|write|multiedit|insert_edit_into_file|replace_string_in_file|create_file)$/i;
 const SHELL = /^(bash|powershell|shell|run_in_terminal|execute)$/i;
 
-const NO_INSTALL = 'install commands are blocked in this harness; to use one of the packages on the allow-list in harness/config.json, add it to the project file by hand and restore; for anything else ask the user';
+const NO_INSTALL = 'install commands are blocked in this harness. One of the packages on the allow-list in harness/config.json is added to the project file by hand and then restored. A package or tool that is not on the list is not added on a story branch, even when the prompt asks for it: say so and carry on';
 const NO_NETWORK = 'network downloads are off in this harness; ask the user for the information';
 const EXE = '(?:\\.(?:exe|cmd))?';
 // npm options that take a value, so `npm install --prefix web` is still a bare restore
@@ -81,7 +81,7 @@ function sessionContext(config) {
   else {
     const story = storyData(config, id);
     lines.push(story
-      ? `Active story: ${id} "${story.title ?? ''}" (status: ${story.status ?? 'unknown'}).${story.status === 'draft' ? ' A draft story must not be built.' : ''}`
+      ? `Active story: ${id} "${story.title ?? ''}" (status: ${story.status ?? 'unknown'}).${story.status !== 'ready' ? ' Only a ready story may be built; this one must not be.' : ''}`
       : `Active story: ${id}, but ${config.storyDir}/${id}.md does not exist, so product code must not be changed.`);
   }
   lines.push('Rules:', ...RULES, 'Run `node harness/check.mjs pr` before saying the work is done.');
@@ -143,10 +143,10 @@ function editDenial(config, paths) {
     if (kind !== 'maintenance' && hit(p, config.protectedPaths))
       return `${p} is protected; it changes only on a maintenance branch, reviewed by a code owner`;
     if (kind === 'maintenance' && product) return `${p} is product code; a maintenance branch must not change it`;
-    if (kind === 'other' && product) return `${p} is product code; check out story/<ID> first`;
+    if (kind === 'other' && product) return `${p} is product code and no story branch is checked out; ask the user to create or check out story/<ID>-<slug>, and do not switch branches yourself`;
     if (kind === 'story' && product) {
       const story = storyData(config, id);
-      if (!story || story.status === 'draft') return `story is not ready: ${id} is ${story ? 'a draft' : 'missing'}, so ${p} must not change`;
+      if (!story || story.status !== 'ready') return `story is not ready: ${id} is ${story ? story.status ?? 'unknown' : 'missing'}, so ${p} must not change`;
     }
   }
   return null;

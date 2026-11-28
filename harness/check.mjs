@@ -21,7 +21,7 @@ const REQUIRED_FILES = [
   'harness/config.json',
 ];
 // Built from parts so this source does not spell another assistant's name.
-const SECOND_SOURCES = ['.cl' + 'aude', 'CL' + 'AUDE.md', 'AGENTS.md'];
+const SECOND_SOURCES = ['.cl' + 'aude', 'CL' + 'AUDE.md', 'AGENTS.md', 'GEMINI.md', '.agents'];
 const BUILD_OUTPUT = /(^|\/)(bin|obj|node_modules)\//;
 
 const read = (root, file) => (existsSync(join(root, file)) ? readFileSync(join(root, file), 'utf8') : null);
@@ -72,7 +72,7 @@ function storyChecks(root, cfg, id, base, files) {
   else {
     out.push(...lintFile(root, cfg, storyFile));
     const { data, body } = parseFrontmatter(story);
-    if (data.status === 'draft') add('STORY_NOT_READY', `${storyFile} is a draft; a code owner sets it to ready on a maintenance branch`);
+    if (data.status !== 'ready') add('STORY_NOT_READY', `${storyFile} is ${data.status || 'not ready'}; only a ready story is built, and a code owner sets that on a maintenance branch`);
     acIds = bullets(sections(body)['acceptance criteria']).map((b) => b.match(/^\*\*(AC\d+)\*\*/)?.[1]).filter(Boolean);
   }
 
@@ -184,6 +184,11 @@ function doctor(root) {
   if (missing.length)
     add('DOCTOR_HOOKS', `.harness/hook.log has no ${missing.join(' or ')} entry; open a Copilot chat in this trusted folder, send one prompt, then rerun doctor`);
 
+  const pre = log.filter((e) => e.event === 'preToolUse');
+  if (pre.length && !pre.some((e) => e.tool && e.decision !== 'error'))
+    add('DOCTOR_HOOKS', '.harness/hook.log has preToolUse entries but none names a tool; the hook cannot read what Copilot sends (see "reason" in the log)');
+
+  console.log(`last hook call: ${log.at(-1)?.ts ?? '(never)'}`);
   console.log(`tools seen: ${[...new Set(log.map((e) => e.tool).filter(Boolean))].sort().join(', ') || '(none)'}`);
   console.log(`denies: ${log.filter((e) => e.decision === 'deny').length}`);
   return out;

@@ -91,7 +91,7 @@ What each part is for:
 
 ## 4. Keyboard and focus checks
 
-Add these to the AC's test, or as one more test with the same token, when the AC involves interaction.
+Add these assertions to the AC's own test when the AC involves interaction. Do not add a separate test for behaviour no AC states.
 
 ```ts
 test('CSX-123/AC1 adds a book using the keyboard only', async ({ page }) => {
