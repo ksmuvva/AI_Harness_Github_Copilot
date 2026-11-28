@@ -1,0 +1,9 @@
+# Changes to these paths need a review from a code owner.
+# Pair this file with a ruleset on main that requires code-owner review.
+/.github/          @ksmuvva
+/harness/          @ksmuvva
+/user-stories/     @ksmuvva
+/docs/data-model/  @ksmuvva
+/docs/context/     @ksmuvva
+/eval/             @ksmuvva
+/.vscode/          @ksmuvva

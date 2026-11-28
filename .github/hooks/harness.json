@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [{ "type": "command", "command": "node harness/hook.mjs sessionStart", "timeoutSec": 10 }],
+    "preToolUse": [{ "type": "command", "command": "node harness/hook.mjs preToolUse", "timeoutSec": 10 }]
+  }
+}

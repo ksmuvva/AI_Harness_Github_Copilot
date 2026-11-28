@@ -1,0 +1,14 @@
+{
+  "storyIdPattern": "^(CSX|T)-\\d+$",
+  "storyDir": "user-stories",
+  "traceDir": "docs/traces",
+  "dataModelDir": "docs/data-model",
+  "productPaths": ["src/**", "tests/**", "web/**", "db/**"],
+  "testPaths": ["tests/**", "web/**"],
+  "protectedPaths": [".github/**", "harness/**", "user-stories/**", "docs/data-model/**", "docs/context/**", "eval/**", ".vscode/**", ".gitattributes", ".gitignore"],
+  "maintenanceBranchPrefixes": ["harness/", "stories/"],
+  "allowedPackages": {
+    "nuget": ["Microsoft.AspNetCore.OpenApi", "Microsoft.EntityFrameworkCore", "Microsoft.EntityFrameworkCore.Design", "Npgsql.EntityFrameworkCore.PostgreSQL", "Microsoft.NET.Test.Sdk", "Microsoft.AspNetCore.Mvc.Testing", "xunit", "xunit.runner.visualstudio", "Reqnroll.xUnit", "Testcontainers.PostgreSql", "coverlet.collector"],
+    "npm": ["react", "react-dom", "vite", "@vitejs/plugin-react", "typescript", "@types/react", "@types/react-dom", "@playwright/test", "@axe-core/playwright"]
+  }
+}

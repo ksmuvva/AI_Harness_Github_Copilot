@@ -1,0 +1,16 @@
+# Local harness state (hook log)
+.harness/
+
+# Other AI assistants' config files: the Copilot runtime can read some of them
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+
+# Build output and tooling
+bin/
+obj/
+node_modules/
+dist/
+.vs/
+*.user
+TestResults/
